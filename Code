@@ -1,0 +1,670 @@
+#Run this to establish the functions
+import requests
+import bs4
+def getcompetitions(link):
+    file = requests.get(link)
+    file = bs4.BeautifulSoup(file.text, "lxml")
+    competitions = []
+    finalthing = []
+    for info in file.find_all('td', attrs={'class':"AthleteBio-medalsTableCell AthleteBio-medalsTableCell--competition AthleteBio-medalsTableCell--counter"}):
+        competitions.append(info.get_text('td')) 
+    for info in file.find_all('td', attrs={'class':"AthleteBio-medalsTableCell AthleteBio-medalsTableCell--competition AthleteBio-medalsTableCell--counter AthleteBio-medalsTableCell--odd"}):
+        competitions.append(info.get_text('td'))
+    return(competitions)
+def getcompmedals(link):
+    file = requests.get(link)
+    file = bs4.BeautifulSoup(file.text,"lxml")
+    medals = []
+    for info in file.find_all('td', attrs={'class':"AthleteBio-medalsTableCell AthleteBio-medalsTableCell--md AthleteBio-medalsTableCell--total AthleteBio-medalsTableCell--counter"}):
+        medals.append(info.get_text('td'))
+    for info in file.find_all('td', attrs={'class':"AthleteBio-medalsTableCell AthleteBio-medalsTableCell--md AthleteBio-medalsTableCell--total AthleteBio-medalsTableCell--counter AthleteBio-medalsTableCell--odd"}):
+        medals.append(info.get_text('td'))
+    return(medals)
+def gettotalmedals(link):
+    a = 0
+    for i in getcompmedals(link):
+        a += int(i)
+    return(a)
+def getname(link):
+    file = requests.get(link)
+    file = bs4.BeautifulSoup(file.text, "lxml")
+    name = ""
+    for info in file.find_all('h1', attrs={'class':"AthleteHero-fencerName"}):
+        name = info.get_text('h1')
+    return(name)
+def makefencermedalslist(links):
+    fencermedals = {} 
+    for link in links:
+        fencermedals[getname(link)] = gettotalmedals(link)
+    fencermedals = {k: v for k, v in sorted(WFfencermedals.items(), key=lambda item: -item[1])}
+    return(fencermedals)
+#Men's foil info and the code to make that
+top10mf2020 = ['https://fie.org/athletes/15860','https://fie.org/athletes/22555','https://fie.org/athletes/14397','https://fie.org/athletes/4423','https://fie.org/athletes/21958','https://fie.org/athletes/19821','https://fie.org/athletes/36441','https://fie.org/athletes/23013','https://fie.org/athletes/15375','https://fie.org/athletes/17449']
+top10mf2019 = ['https://fie.org/athletes/15860','https://fie.org/athletes/23013','https://fie.org/athletes/22555','https://fie.org/athletes/19821','https://fie.org/athletes/14397','https://fie.org/athletes/4423','https://fie.org/athletes/30878','https://fie.org/athletes/21958','https://fie.org/athletes/36441','https://fie.org/athletes/2908']
+top10mf2018 = ['https://fie.org/athletes/15860','https://fie.org/athletes/3256','https://fie.org/athletes/23013','https://fie.org/athletes/4423','https://fie.org/athletes/15375','https://fie.org/athletes/25212','https://fie.org/athletes/19821','https://fie.org/athletes/21958','https://fie.org/athletes/2908','https://fie.org/athletes/17823']
+top10mf2017 = ['https://fie.org/athletes/21958','https://fie.org/athletes/19821','https://fie.org/athletes/25212','https://fie.org/athletes/15860','https://fie.org/athletes/23013','https://fie.org/athletes/3256','https://fie.org/athletes/16396','https://fie.org/athletes/17823','https://fie.org/athletes/12343','https://fie.org/athletes/18861']
+top10mf2016 = ['https://fie.org/athletes/21958','https://fie.org/athletes/19821','https://fie.org/athletes/3256','https://fie.org/athletes/25212','https://fie.org/athletes/17823','https://fie.org/athletes/17052','https://fie.org/athletes/10399','https://fie.org/athletes/14397','https://fie.org/athletes/18031','https://fie.org/athletes/32250']
+top10mf2015 = ['https://fie.org/athletes/23013','https://fie.org/athletes/4850','https://fie.org/athletes/21958','https://fie.org/athletes/4423','https://fie.org/athletes/12691','https://fie.org/athletes/19821','https://fie.org/athletes/10794','https://fie.org/athletes/14397','https://fie.org/athletes/15375','https://fie.org/athletes/21621']
+top10mf2014 = ['https://fie.org/athletes/10399','https://fie.org/athletes/22555','https://fie.org/athletes/15375','https://fie.org/athletes/14397','https://fie.org/athletes/21765','https://fie.org/athletes/17052','https://fie.org/athletes/21958','https://fie.org/athletes/4423','https://fie.org/athletes/12691','https://fie.org/athletes/23013']
+top10mf2013 = ['https://fie.org/athletes/4423','https://fie.org/athletes/14397','https://fie.org/athletes/16397','https://fie.org/athletes/15375','https://fie.org/athletes/12343','https://fie.org/athletes/4364','https://fie.org/athletes/17052','https://fie.org/athletes/10183','https://fie.org/athletes/21958','https://fie.org/athletes/23013']
+top10mf2012 = ['https://fie.org/athletes/4423','https://fie.org/athletes/10397','https://fie.org/athletes/10399','https://fie.org/athletes/18031','https://fie.org/athletes/4921','https://fie.org/athletes/4364','https://fie.org/athletes/15375','https://fie.org/athletes/10183','https://fie.org/athletes/23013','https://fie.org/athletes/21958']
+top10mf2011 = ['https://fie.org/athletes/4423','https://fie.org/athletes/17823','https://fie.org/athletes/3039','https://fie.org/athletes/10183','https://fie.org/athletes/4364','https://fie.org/athletes/18031','https://fie.org/athletes/2908','https://fie.org/athletes/4921','https://fie.org/athletes/15375','https://fie.org/athletes/10397']
+top10mf2010 = ['https://fie.org/athletes/10397','https://fie.org/athletes/4850','https://fie.org/athletes/4423','https://fie.org/athletes/3629','https://fie.org/athletes/12343','https://fie.org/athletes/10183','https://fie.org/athletes/4364','https://fie.org/athletes/3256','https://fie.org/athletes/10396','https://fie.org/athletes/14397']
+top10mf2009 = ['https://fie.org/athletes/4364','https://fie.org/athletes/3629','https://fie.org/athletes/9467','https://fie.org/athletes/3256','https://fie.org/athletes/4423','https://fie.org/athletes/4850','https://fie.org/athletes/2908','https://fie.org/athletes/9106','https://fie.org/athletes/2892','https://fie.org/athletes/5835']
+top10mf2008 = ['https://fie.org/athletes/4423','https://fie.org/athletes/2908','https://fie.org/athletes/3629','https://fie.org/athletes/3643','https://fie.org/athletes/4364','https://fie.org/athletes/2095','https://fie.org/athletes/4850','https://fie.org/athletes/4670','https://fie.org/athletes/4921','https://fie.org/athletes/10397']
+top10mf2007 = ['https://fie.org/athletes/4364','https://fie.org/athletes/3643','https://fie.org/athletes/2908','https://fie.org/athletes/3629','https://fie.org/athletes/4423','https://fie.org/athletes/10397','https://fie.org/athletes/4850','https://fie.org/athletes/4670','https://fie.org/athletes/4728','https://fie.org/athletes/5426']
+top10mf2006 = ['https://fie.org/athletes/4423','https://fie.org/athletes/3629','https://fie.org/athletes/4364','https://fie.org/athletes/3643','https://fie.org/athletes/10397','https://fie.org/athletes/4670','https://fie.org/athletes/4368','https://fie.org/athletes/8219','https://fie.org/athletes/5426','https://fie.org/athletes/2695']
+top10mf2005 = ['https://fie.org/athletes/4670','https://fie.org/athletes/2908','https://fie.org/athletes/8219','https://fie.org/athletes/19','https://fie.org/athletes/4364','https://fie.org/athletes/2706','https://fie.org/athletes/4423','https://fie.org/athletes/4728','https://fie.org/athletes/3643','https://fie.org/athletes/3629']
+top10mf2004 = ['https://fie.org/athletes/4670','https://fie.org/athletes/4423','https://fie.org/athletes/2861','https://fie.org/athletes/19','https://fie.org/athletes/4728','https://fie.org/athletes/1743','https://fie.org/athletes/3629','https://fie.org/athletes/4850','https://fie.org/athletes/5545','https://fie.org/athletes/8361']
+top10mf2003 = ['https://fie.org/athletes/3629','https://fie.org/athletes/3893','https://fie.org/athletes/4423','https://fie.org/athletes/4670','https://fie.org/athletes/4728','https://fie.org/athletes/5545','https://fie.org/athletes/1743','https://fie.org/athletes/3460','https://fie.org/athletes/5818','https://fie.org/athletes/2861']
+top10mf2002 = ['https://fie.org/athletes/4728','https://fie.org/athletes/3893','https://fie.org/athletes/5389','https://fie.org/athletes/19','https://fie.org/athletes/2822','https://fie.org/athletes/1743','https://fie.org/athletes/2167','https://fie.org/athletes/2726','https://fie.org/athletes/2861','https://fie.org/athletes/5545']
+fencers2010s = list(set(top10mf2020+top10mf2019+top10mf2018+top10mf2017+top10mf2016+top10mf2015+top10mf2014+top10mf2013+top10mf2012+top10mf2011))
+fencers2000s = list(set(top10mf2010+top10mf2009+top10mf2008+top10mf2007+top10mf2006+top10mf2005+top10mf2004+top10mf2003+top10mf2002))
+MFfencerslinks = list(set(top10mf2020+top10mf2019+top10mf2018+top10mf2017+top10mf2016+top10mf2015+top10mf2014+top10mf2013+top10mf2012+top10mf2011+top10mf2010+top10mf2009+top10mf2008+top10mf2007+top10mf2006+top10mf2005+top10mf2004+top10mf2003+top10mf2002))    
+MFfencermedals = {}
+for link in MFfencerslinks:
+    MFfencermedals[getname(link)] = gettotalmedals(link)
+MFfencermedals = {k: v for k, v in sorted(MFfencermedals.items(), key=lambda item: -item[1])}
+
+
+#Men's sabre stuff
+top10ms2002_2020 = '''https://fie.org/athletes/36990
+https://fie.org/athletes/12611
+https://fie.org/athletes/27914
+https://fie.org/athletes/24460
+https://fie.org/athletes/13741
+https://fie.org/athletes/9733
+https://fie.org/athletes/22559
+https://fie.org/athletes/24920
+https://fie.org/athletes/18876
+https://fie.org/athletes/15087
+https://fie.org/athletes/36990
+https://fie.org/athletes/27914
+https://fie.org/athletes/12611
+https://fie.org/athletes/24460
+https://fie.org/athletes/13741
+https://fie.org/athletes/24920
+https://fie.org/athletes/15087
+https://fie.org/athletes/9733
+https://fie.org/athletes/22559
+https://fie.org/athletes/4276
+https://fie.org/athletes/27914
+https://fie.org/athletes/18876
+https://fie.org/athletes/11066
+https://fie.org/athletes/13741
+https://fie.org/athletes/36990
+https://fie.org/athletes/24920
+https://fie.org/athletes/24460
+https://fie.org/athletes/22449
+https://fie.org/athletes/12611
+https://fie.org/athletes/15087
+https://fie.org/athletes/18876
+https://fie.org/athletes/24460
+https://fie.org/athletes/22449
+https://fie.org/athletes/13741
+https://fie.org/athletes/2693
+https://fie.org/athletes/11066
+https://fie.org/athletes/36990
+https://fie.org/athletes/12611
+https://fie.org/athletes/14997
+https://fie.org/athletes/9746
+https://fie.org/athletes/11066
+https://fie.org/athletes/13741
+https://fie.org/athletes/2693
+https://fie.org/athletes/5861
+https://fie.org/athletes/5800
+https://fie.org/athletes/4276
+https://fie.org/athletes/18876
+https://fie.org/athletes/14997
+https://fie.org/athletes/13643
+https://fie.org/athletes/27914
+https://fie.org/athletes/18876
+https://fie.org/athletes/11066
+https://fie.org/athletes/13741
+https://fie.org/athletes/5861
+https://fie.org/athletes/13643
+https://fie.org/athletes/14997
+https://fie.org/athletes/12611
+https://fie.org/athletes/24920
+https://fie.org/athletes/4586
+https://fie.org/athletes/1754
+https://fie.org/athletes/18876
+https://fie.org/athletes/11066
+https://fie.org/athletes/13741
+https://fie.org/athletes/5861
+https://fie.org/athletes/13643
+https://fie.org/athletes/24259
+https://fie.org/athletes/4586
+https://fie.org/athletes/4603
+https://fie.org/athletes/9746
+https://fie.org/athletes/15087
+https://fie.org/athletes/15087
+https://fie.org/athletes/13741
+https://fie.org/athletes/13643
+https://fie.org/athletes/4603
+https://fie.org/athletes/18876
+https://fie.org/athletes/5800
+https://fie.org/athletes/15182
+https://fie.org/athletes/9746
+https://fie.org/athletes/24259
+https://fie.org/athletes/1803
+https://fie.org/athletes/1754
+https://fie.org/athletes/5861
+https://fie.org/athletes/13741
+https://fie.org/athletes/18876
+https://fie.org/athletes/5652
+https://fie.org/athletes/5800
+https://fie.org/athletes/4603
+https://fie.org/athletes/13998
+https://fie.org/athletes/15087
+https://fie.org/athletes/9733
+https://fie.org/athletes/5861
+https://fie.org/athletes/4586
+https://fie.org/athletes/18876
+https://fie.org/athletes/1754
+https://fie.org/athletes/13998
+https://fie.org/athletes/5652
+https://fie.org/athletes/13741
+https://fie.org/athletes/4702
+https://fie.org/athletes/2986
+https://fie.org/athletes/4613
+https://fie.org/athletes/1754
+https://fie.org/athletes/10782
+https://fie.org/athletes/18876
+https://fie.org/athletes/13741
+https://fie.org/athletes/15087
+https://fie.org/athletes/4702
+https://fie.org/athletes/5652
+https://fie.org/athletes/5861
+https://fie.org/athletes/9746
+https://fie.org/athletes/13998
+https://fie.org/athletes/1754
+https://fie.org/athletes/5652
+https://fie.org/athletes/4586
+https://fie.org/athletes/4702
+https://fie.org/athletes/4057
+https://fie.org/athletes/4613
+https://fie.org/athletes/2922
+https://fie.org/athletes/2986
+https://fie.org/athletes/5861
+https://fie.org/athletes/2502
+https://fie.org/athletes/4702
+https://fie.org/athletes/12842
+https://fie.org/athletes/1754
+https://fie.org/athletes/5652
+https://fie.org/athletes/6717
+https://fie.org/athletes/29
+https://fie.org/athletes/4586
+https://fie.org/athletes/2502
+https://fie.org/athletes/4182
+https://fie.org/athletes/4057
+https://fie.org/athletes/5861
+https://fie.org/athletes/29
+https://fie.org/athletes/5828
+https://fie.org/athletes/4586
+https://fie.org/athletes/1754
+https://fie.org/athletes/8228
+https://fie.org/athletes/4182
+https://fie.org/athletes/3026
+https://fie.org/athletes/1826
+https://fie.org/athletes/2538
+https://fie.org/athletes/4182
+https://fie.org/athletes/1826
+https://fie.org/athletes/2986
+https://fie.org/athletes/5861
+https://fie.org/athletes/1754
+https://fie.org/athletes/3026
+https://fie.org/athletes/2538
+https://fie.org/athletes/29
+https://fie.org/athletes/3451
+https://fie.org/athletes/5828
+https://fie.org/athletes/5861
+https://fie.org/athletes/29
+https://fie.org/athletes/5828
+https://fie.org/athletes/1826
+https://fie.org/athletes/1754
+https://fie.org/athletes/4182
+https://fie.org/athletes/4586
+https://fie.org/athletes/3026
+https://fie.org/athletes/6416
+https://fie.org/athletes/2693
+https://fie.org/athletes/6416
+https://fie.org/athletes/5828
+https://fie.org/athletes/4182
+https://fie.org/athletes/5760
+https://fie.org/athletes/4586
+https://fie.org/athletes/1826
+https://fie.org/athletes/29
+https://fie.org/athletes/4147
+https://fie.org/athletes/4702
+https://fie.org/athletes/2986
+https://fie.org/athletes/4072
+https://fie.org/athletes/4586
+https://fie.org/athletes/29
+https://fie.org/athletes/5828
+https://fie.org/athletes/4702
+https://fie.org/athletes/6717
+https://fie.org/athletes/6416
+https://fie.org/athletes/445
+https://fie.org/athletes/2986
+https://fie.org/athletes/4147
+https://fie.org/athletes/5828
+https://fie.org/athletes/2986
+https://fie.org/athletes/29
+https://fie.org/athletes/4702
+https://fie.org/athletes/3451
+https://fie.org/athletes/4182
+https://fie.org/athletes/5772
+https://fie.org/athletes/4532
+https://fie.org/athletes/3050
+https://fie.org/athletes/6717'''
+top10ms2002_2020 = top10ms2002_2020.split('\n')
+MSfencerlinks = list(set(top10ms2002_2020))
+MSfencermedals = {}
+for link in MSfencerlinks:
+    MSfencermedals[getname(link)] = gettotalmedals(link)
+MSfencermedals = {k: v for k, v in sorted(MSfencermedals.items(), key=lambda item: -item[1])}
+
+#Women's sabre things
+top10ws2020_2002 = '''https://fie.org/athletes/13715
+https://fie.org/athletes/9993
+https://fie.org/athletes/30542
+https://fie.org/athletes/14935
+https://fie.org/athletes/37871
+https://fie.org/athletes/31302
+https://fie.org/athletes/18881
+https://fie.org/athletes/31279
+https://fie.org/athletes/6783
+https://fie.org/athletes/9283
+https://fie.org/athletes/13715
+https://fie.org/athletes/9993
+https://fie.org/athletes/30542
+https://fie.org/athletes/26354
+https://fie.org/athletes/18881
+https://fie.org/athletes/15536
+https://fie.org/athletes/14935
+https://fie.org/athletes/39147
+https://fie.org/athletes/31302
+https://fie.org/athletes/31161
+https://fie.org/athletes/13715
+https://fie.org/athletes/9993
+https://fie.org/athletes/26354
+https://fie.org/athletes/15536
+https://fie.org/athletes/9283
+https://fie.org/athletes/25208
+https://fie.org/athletes/18881
+https://fie.org/athletes/31161
+https://fie.org/athletes/15098
+https://fie.org/athletes/9199
+https://fie.org/athletes/26354
+https://fie.org/athletes/15536
+https://fie.org/athletes/18881
+https://fie.org/athletes/30542
+https://fie.org/athletes/25208
+https://fie.org/athletes/13715
+https://fie.org/athletes/12507
+https://fie.org/athletes/13452
+https://fie.org/athletes/15098
+https://fie.org/athletes/15847
+https://fie.org/athletes/9993
+https://fie.org/athletes/25208
+https://fie.org/athletes/13715
+https://fie.org/athletes/6783
+https://fie.org/athletes/18881
+https://fie.org/athletes/26354
+https://fie.org/athletes/22258
+https://fie.org/athletes/27545
+https://fie.org/athletes/30542
+https://fie.org/athletes/15847
+https://fie.org/athletes/9993
+https://fie.org/athletes/13715
+https://fie.org/athletes/6783
+https://fie.org/athletes/27545
+https://fie.org/athletes/15098
+https://fie.org/athletes/15536
+https://fie.org/athletes/9199
+https://fie.org/athletes/25208
+https://fie.org/athletes/26354
+https://fie.org/athletes/15847
+https://fie.org/athletes/13715
+https://fie.org/athletes/6783
+https://fie.org/athletes/5767
+https://fie.org/athletes/3967
+https://fie.org/athletes/9199
+https://fie.org/athletes/18881
+https://fie.org/athletes/14935
+https://fie.org/athletes/27545
+https://fie.org/athletes/13452
+https://fie.org/athletes/5471
+https://fie.org/athletes/13715
+https://fie.org/athletes/6783
+https://fie.org/athletes/18881
+https://fie.org/athletes/5767
+https://fie.org/athletes/12507
+https://fie.org/athletes/3967
+https://fie.org/athletes/5471
+https://fie.org/athletes/21815
+https://fie.org/athletes/16435
+https://fie.org/athletes/17757
+https://fie.org/athletes/6783
+https://fie.org/athletes/9993
+https://fie.org/athletes/13715
+https://fie.org/athletes/18881
+https://fie.org/athletes/3967
+https://fie.org/athletes/9199
+https://fie.org/athletes/12507
+https://fie.org/athletes/15729
+https://fie.org/athletes/15847
+https://fie.org/athletes/21116
+https://fie.org/athletes/6783
+https://fie.org/athletes/9993
+https://fie.org/athletes/13715
+https://fie.org/athletes/17757
+https://fie.org/athletes/5767
+https://fie.org/athletes/15729
+https://fie.org/athletes/5471
+https://fie.org/athletes/15847
+https://fie.org/athletes/12507
+https://fie.org/athletes/4568
+https://fie.org/athletes/6783
+https://fie.org/athletes/13715
+https://fie.org/athletes/9993
+https://fie.org/athletes/5767
+https://fie.org/athletes/5471
+https://fie.org/athletes/17757
+https://fie.org/athletes/4377
+https://fie.org/athletes/12507
+https://fie.org/athletes/3672
+https://fie.org/athletes/15729
+https://fie.org/athletes/6783
+https://fie.org/athletes/13715
+https://fie.org/athletes/9993
+https://fie.org/athletes/5767
+https://fie.org/athletes/4377
+https://fie.org/athletes/3059
+https://fie.org/athletes/2980
+https://fie.org/athletes/4177
+https://fie.org/athletes/12507
+https://fie.org/athletes/5379
+https://fie.org/athletes/11650
+https://fie.org/athletes/6606
+https://fie.org/athletes/6783
+https://fie.org/athletes/2092
+https://fie.org/athletes/9993
+https://fie.org/athletes/8224
+https://fie.org/athletes/5767
+https://fie.org/athletes/5027
+https://fie.org/athletes/2980
+https://fie.org/athletes/5471
+https://fie.org/athletes/2092
+https://fie.org/athletes/11650
+https://fie.org/athletes/6783
+https://fie.org/athletes/5823
+https://fie.org/athletes/4568
+https://fie.org/athletes/6606
+https://fie.org/athletes/9993
+https://fie.org/athletes/5770
+https://fie.org/athletes/5379
+https://fie.org/athletes/5471
+https://fie.org/athletes/6783
+https://fie.org/athletes/11650
+https://fie.org/athletes/9993
+https://fie.org/athletes/2980
+https://fie.org/athletes/3049
+https://fie.org/athletes/6606
+https://fie.org/athletes/5770
+https://fie.org/athletes/5379
+https://fie.org/athletes/5767
+https://fie.org/athletes/2092
+https://fie.org/athletes/3049
+https://fie.org/athletes/6606
+https://fie.org/athletes/5471
+https://fie.org/athletes/4550
+https://fie.org/athletes/6783
+https://fie.org/athletes/9993
+https://fie.org/athletes/4568
+https://fie.org/athletes/5823
+https://fie.org/athletes/12844
+https://fie.org/athletes/5796
+https://fie.org/athletes/6606
+https://fie.org/athletes/6783
+https://fie.org/athletes/3049
+https://fie.org/athletes/5823
+https://fie.org/athletes/2092
+https://fie.org/athletes/2980
+https://fie.org/athletes/5663
+https://fie.org/athletes/6604
+https://fie.org/athletes/4568
+https://fie.org/athletes/5471
+https://fie.org/athletes/6606
+https://fie.org/athletes/5823
+https://fie.org/athletes/2694
+https://fie.org/athletes/5471
+https://fie.org/athletes/8308
+https://fie.org/athletes/4568
+https://fie.org/athletes/2980
+https://fie.org/athletes/2092
+https://fie.org/athletes/3656
+https://fie.org/athletes/5751
+https://fie.org/athletes/2092
+https://fie.org/athletes/8308
+https://fie.org/athletes/2694
+https://fie.org/athletes/5823
+https://fie.org/athletes/6606
+https://fie.org/athletes/3064
+https://fie.org/athletes/5783
+https://fie.org/athletes/3113
+https://fie.org/athletes/3049
+https://fie.org/athletes/4568'''
+top10ws2020_2002 = top10ws2020_2002.split('\n')
+WSfencerlinks = list(set(top10ws2020_2002))
+WSfencermedals = {}
+for link in WSfencerlinks:
+    WSfencermedals[getname(link)] = gettotalmedals(link)
+WSfencermedals = {k: v for k, v in sorted(WSfencermedals.items(), key=lambda item: -item[1])}
+
+#Women's Foil things
+top10wf2020_2002 = '''https://fie.org/athletes/18831
+https://fie.org/athletes/19878
+https://fie.org/athletes/4464
+https://fie.org/athletes/9377
+https://fie.org/athletes/21717
+https://fie.org/athletes/20514
+https://fie.org/athletes/39244
+https://fie.org/athletes/13459
+https://fie.org/athletes/27237
+https://fie.org/athletes/40025
+https://fie.org/athletes/18831
+https://fie.org/athletes/19878
+https://fie.org/athletes/4464
+https://fie.org/athletes/9377
+https://fie.org/athletes/21717
+https://fie.org/athletes/33746
+https://fie.org/athletes/20744
+https://fie.org/athletes/23447
+https://fie.org/athletes/20514
+https://fie.org/athletes/10688
+https://fie.org/athletes/18831
+https://fie.org/athletes/19878
+https://fie.org/athletes/21717
+https://fie.org/athletes/10402
+https://fie.org/athletes/9377
+https://fie.org/athletes/20514
+https://fie.org/athletes/23398
+https://fie.org/athletes/33746
+https://fie.org/athletes/28162
+https://fie.org/athletes/23445
+https://fie.org/athletes/18831
+https://fie.org/athletes/9377
+https://fie.org/athletes/21717
+https://fie.org/athletes/19878
+https://fie.org/athletes/20514
+https://fie.org/athletes/12269
+https://fie.org/athletes/12590
+https://fie.org/athletes/5037
+https://fie.org/athletes/28162
+https://fie.org/athletes/23445
+https://fie.org/athletes/9377
+https://fie.org/athletes/18831
+https://fie.org/athletes/4464
+https://fie.org/athletes/21717
+https://fie.org/athletes/20514
+https://fie.org/athletes/10050
+https://fie.org/athletes/10402
+https://fie.org/athletes/2860
+https://fie.org/athletes/12590
+https://fie.org/athletes/19878
+https://fie.org/athletes/4464
+https://fie.org/athletes/9377
+https://fie.org/athletes/18831
+https://fie.org/athletes/21717
+https://fie.org/athletes/13459
+https://fie.org/athletes/10402
+https://fie.org/athletes/10688
+https://fie.org/athletes/10050
+https://fie.org/athletes/18071
+https://fie.org/athletes/4736
+https://fie.org/athletes/9377
+https://fie.org/athletes/4464
+https://fie.org/athletes/12590
+https://fie.org/athletes/4736
+https://fie.org/athletes/10402
+https://fie.org/athletes/18831
+https://fie.org/athletes/21717
+https://fie.org/athletes/13459
+https://fie.org/athletes/10688
+https://fie.org/athletes/18071
+https://fie.org/athletes/9377
+https://fie.org/athletes/18831
+https://fie.org/athletes/3903
+https://fie.org/athletes/4464
+https://fie.org/athletes/10688
+https://fie.org/athletes/16392
+https://fie.org/athletes/4485
+https://fie.org/athletes/18071
+https://fie.org/athletes/2860
+https://fie.org/athletes/20514
+https://fie.org/athletes/9377
+https://fie.org/athletes/4464
+https://fie.org/athletes/5037
+https://fie.org/athletes/4736
+https://fie.org/athletes/2860
+https://fie.org/athletes/21717
+https://fie.org/athletes/2928
+https://fie.org/athletes/10402
+https://fie.org/athletes/5368
+https://fie.org/athletes/15006
+https://fie.org/athletes/4464
+https://fie.org/athletes/4736
+https://fie.org/athletes/5037
+https://fie.org/athletes/9377
+https://fie.org/athletes/4667
+https://fie.org/athletes/21717
+https://fie.org/athletes/5805
+https://fie.org/athletes/2928
+https://fie.org/athletes/4164
+https://fie.org/athletes/18831
+https://fie.org/athletes/4736
+https://fie.org/athletes/5037
+https://fie.org/athletes/4464
+https://fie.org/athletes/9377
+https://fie.org/athletes/13459
+https://fie.org/athletes/2928
+https://fie.org/athletes/5368
+https://fie.org/athletes/10050
+https://fie.org/athletes/5805
+https://fie.org/athletes/4667
+https://fie.org/athletes/9377
+https://fie.org/athletes/4736
+https://fie.org/athletes/5037
+https://fie.org/athletes/13459
+https://fie.org/athletes/4464
+https://fie.org/athletes/5368
+https://fie.org/athletes/10050
+https://fie.org/athletes/5753
+https://fie.org/athletes/3873
+https://fie.org/athletes/4243
+https://fie.org/athletes/4736
+https://fie.org/athletes/5037
+https://fie.org/athletes/4716
+https://fie.org/athletes/3903
+https://fie.org/athletes/4526
+https://fie.org/athletes/3075
+https://fie.org/athletes/2928
+https://fie.org/athletes/4861
+https://fie.org/athletes/6530
+https://fie.org/athletes/5805
+https://fie.org/athletes/4736
+https://fie.org/athletes/5037
+https://fie.org/athletes/4164
+https://fie.org/athletes/4526
+https://fie.org/athletes/4667
+https://fie.org/athletes/5712
+https://fie.org/athletes/4716
+https://fie.org/athletes/3903
+https://fie.org/athletes/5805
+https://fie.org/athletes/6530
+https://fie.org/athletes/4736
+https://fie.org/athletes/5037
+https://fie.org/athletes/5368
+https://fie.org/athletes/3715
+https://fie.org/athletes/5831
+https://fie.org/athletes/4716
+https://fie.org/athletes/4526
+https://fie.org/athletes/4121
+https://fie.org/athletes/4464
+https://fie.org/athletes/4164
+https://fie.org/athletes/3715
+https://fie.org/athletes/4526
+https://fie.org/athletes/4121
+https://fie.org/athletes/25366
+https://fie.org/athletes/5755
+https://fie.org/athletes/4464
+https://fie.org/athletes/4164
+https://fie.org/athletes/2928
+https://fie.org/athletes/3075
+https://fie.org/athletes/4861
+https://fie.org/athletes/4736
+https://fie.org/athletes/4716
+https://fie.org/athletes/5368
+https://fie.org/athletes/4164
+https://fie.org/athletes/5709
+https://fie.org/athletes/5634
+https://fie.org/athletes/4243
+https://fie.org/athletes/3075
+https://fie.org/athletes/4526
+https://fie.org/athletes/5755
+https://fie.org/athletes/4736
+https://fie.org/athletes/5368
+https://fie.org/athletes/4716
+https://fie.org/athletes/5862
+https://fie.org/athletes/4164
+https://fie.org/athletes/5709
+https://fie.org/athletes/3655
+https://fie.org/athletes/3075
+https://fie.org/athletes/5755
+https://fie.org/athletes/3452
+https://fie.org/athletes/5755
+https://fie.org/athletes/5862
+https://fie.org/athletes/4164
+https://fie.org/athletes/4121
+https://fie.org/athletes/4736
+https://fie.org/athletes/4716
+https://fie.org/athletes/5368
+https://fie.org/athletes/25366
+https://fie.org/athletes/3450
+https://fie.org/athletes/5190'''
+top10wf2020_2002 = top10wf2020_2002.split('\n')
+WFfencerlinks = list(set(top10wf2020_2002))
+WFfencermedals = {}
+for link in WFfencerlinks:
+    WFfencermedals[getname(link)] = gettotalmedals(link)
+WFfencermedals = {k: v for k, v in sorted(WFfencermedals.items(), key=lambda item: -item[1])}
+
+#First version of making a total list (only of the name and total number of medals)
+Fencermedals1 = list(MFfencermedals.items())+list(MSfencermedals.items())+list(WFfencermedals.items())+list(WSfencermedals.items())
+Fencermedals  = {}
+for k,v in Fencermedals1:
+    Fencermedals[k] = v
+Fencermedals = {k: v for k, v in sorted(Fencermedals.items(), key=lambda item: -item[1])}
+Fencermedals = list(Fencermedals.items())
