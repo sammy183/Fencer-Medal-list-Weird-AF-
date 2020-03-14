@@ -36,9 +36,31 @@ def makefencermedalslist(links):
     fencermedals = {} 
     for link in links:
         fencermedals[getname(link)] = gettotalmedals(link)
-    fencermedals = {k: v for k, v in sorted(WFfencermedals.items(), key=lambda item: -item[1])}
+    fencermedals = {k: v for k, v in sorted(fencermedals.items(), key=lambda item: -item[1])}
     return(fencermedals)
-#Men's foil info and the code to make that
+def getgoldmedals(link):
+    file = requests.get(link)
+    file = bs4.BeautifulSoup(file.text, "lxml")
+    goldmedals = 0
+    for info in file.find_all('td', attrs={'class':"AthleteBio-medalsTableCell AthleteBio-medalsTableCell--medal AthleteBio-medalsTableCell--counter"}):
+        if "AthleteBio-medalIcon AthleteBio-medalIcon--gold" in str(info):
+            goldmedals += int(info.get_text('span'))
+    for info in file.find_all('td', attrs={'class':"AthleteBio-medalsTableCell AthleteBio-medalsTableCell--medal AthleteBio-medalsTableCell--counter AthleteBio-medalsTableCell--odd"}):
+        if "AthleteBio-medalIcon AthleteBio-medalIcon--gold" in str(info):
+            goldmedals += int(info.get_text('span'))
+    return(goldmedals)
+def makegoldfencermedalslist(links):
+    fencermedals = {} 
+    for link in links:
+        fencermedals[getname(link)] = getgoldmedals(link)
+    fencermedals = {k: v for k, v in sorted(fencermedals.items(), key=lambda item: -item[1])}
+    return(fencermedals)
+#Data sheet (Run to establish lists)
+#The names of the lists are:
+#MFfencerlinks
+#MSfencerlinks
+#WSfencerlinks
+#WFfencerlinks
 top10mf2020 = ['https://fie.org/athletes/15860','https://fie.org/athletes/22555','https://fie.org/athletes/14397','https://fie.org/athletes/4423','https://fie.org/athletes/21958','https://fie.org/athletes/19821','https://fie.org/athletes/36441','https://fie.org/athletes/23013','https://fie.org/athletes/15375','https://fie.org/athletes/17449']
 top10mf2019 = ['https://fie.org/athletes/15860','https://fie.org/athletes/23013','https://fie.org/athletes/22555','https://fie.org/athletes/19821','https://fie.org/athletes/14397','https://fie.org/athletes/4423','https://fie.org/athletes/30878','https://fie.org/athletes/21958','https://fie.org/athletes/36441','https://fie.org/athletes/2908']
 top10mf2018 = ['https://fie.org/athletes/15860','https://fie.org/athletes/3256','https://fie.org/athletes/23013','https://fie.org/athletes/4423','https://fie.org/athletes/15375','https://fie.org/athletes/25212','https://fie.org/athletes/19821','https://fie.org/athletes/21958','https://fie.org/athletes/2908','https://fie.org/athletes/17823']
@@ -60,14 +82,7 @@ top10mf2003 = ['https://fie.org/athletes/3629','https://fie.org/athletes/3893','
 top10mf2002 = ['https://fie.org/athletes/4728','https://fie.org/athletes/3893','https://fie.org/athletes/5389','https://fie.org/athletes/19','https://fie.org/athletes/2822','https://fie.org/athletes/1743','https://fie.org/athletes/2167','https://fie.org/athletes/2726','https://fie.org/athletes/2861','https://fie.org/athletes/5545']
 fencers2010s = list(set(top10mf2020+top10mf2019+top10mf2018+top10mf2017+top10mf2016+top10mf2015+top10mf2014+top10mf2013+top10mf2012+top10mf2011))
 fencers2000s = list(set(top10mf2010+top10mf2009+top10mf2008+top10mf2007+top10mf2006+top10mf2005+top10mf2004+top10mf2003+top10mf2002))
-MFfencerslinks = list(set(top10mf2020+top10mf2019+top10mf2018+top10mf2017+top10mf2016+top10mf2015+top10mf2014+top10mf2013+top10mf2012+top10mf2011+top10mf2010+top10mf2009+top10mf2008+top10mf2007+top10mf2006+top10mf2005+top10mf2004+top10mf2003+top10mf2002))    
-MFfencermedals = {}
-for link in MFfencerslinks:
-    MFfencermedals[getname(link)] = gettotalmedals(link)
-MFfencermedals = {k: v for k, v in sorted(MFfencermedals.items(), key=lambda item: -item[1])}
-
-
-#Men's sabre stuff
+MFfencerlinks = list(set(top10mf2020+top10mf2019+top10mf2018+top10mf2017+top10mf2016+top10mf2015+top10mf2014+top10mf2013+top10mf2012+top10mf2011+top10mf2010+top10mf2009+top10mf2008+top10mf2007+top10mf2006+top10mf2005+top10mf2004+top10mf2003+top10mf2002))
 top10ms2002_2020 = '''https://fie.org/athletes/36990
 https://fie.org/athletes/12611
 https://fie.org/athletes/27914
@@ -258,14 +273,7 @@ https://fie.org/athletes/5772
 https://fie.org/athletes/4532
 https://fie.org/athletes/3050
 https://fie.org/athletes/6717'''
-top10ms2002_2020 = top10ms2002_2020.split('\n')
-MSfencerlinks = list(set(top10ms2002_2020))
-MSfencermedals = {}
-for link in MSfencerlinks:
-    MSfencermedals[getname(link)] = gettotalmedals(link)
-MSfencermedals = {k: v for k, v in sorted(MSfencermedals.items(), key=lambda item: -item[1])}
-
-#Women's sabre things
+MSfencerlinks = list(set(top10ms2002_2020.split('\n')))
 top10ws2020_2002 = '''https://fie.org/athletes/13715
 https://fie.org/athletes/9993
 https://fie.org/athletes/30542
@@ -458,12 +466,6 @@ https://fie.org/athletes/3049
 https://fie.org/athletes/4568'''
 top10ws2020_2002 = top10ws2020_2002.split('\n')
 WSfencerlinks = list(set(top10ws2020_2002))
-WSfencermedals = {}
-for link in WSfencerlinks:
-    WSfencermedals[getname(link)] = gettotalmedals(link)
-WSfencermedals = {k: v for k, v in sorted(WSfencermedals.items(), key=lambda item: -item[1])}
-
-#Women's Foil things
 top10wf2020_2002 = '''https://fie.org/athletes/18831
 https://fie.org/athletes/19878
 https://fie.org/athletes/4464
@@ -656,10 +658,37 @@ https://fie.org/athletes/3450
 https://fie.org/athletes/5190'''
 top10wf2020_2002 = top10wf2020_2002.split('\n')
 WFfencerlinks = list(set(top10wf2020_2002))
-WFfencermedals = {}
-for link in WFfencerlinks:
-    WFfencermedals[getname(link)] = gettotalmedals(link)
-WFfencermedals = {k: v for k, v in sorted(WFfencermedals.items(), key=lambda item: -item[1])}
+
+
+#Run each to establish gold medal lists
+MFgoldmedals = makegoldfencermedalslist(MFfencerlinks)
+WFgoldmedals = makegoldfencermedalslist(WFfencerlinks)
+MSgoldmedals = makegoldfencermedalslist(MSfencerlinks)
+WSgoldmedals = makegoldfencermedalslist(WSfencerlinks)
+#Run each to establish total medal lists
+MFfencermedals = makefencermedalslist(MFfencerlinks)
+MSfencermedals = makefencermedalslist(MSfencerlinks)
+WFfencermedals = makefencermedalslist(WFfencerlinks)
+WSfencermedals = makefencermedalslist(WSfencerlinks)
+
+#Combined list for total medals
+Fencermedals1 = list(MFfencermedals.items())+list(MSfencermedals.items())+list(WFfencermedals.items())+list(WSfencermedals.items())
+Fencermedals  = {}
+for k,v in Fencermedals1:
+    Fencermedals[k] = v
+Fencermedals = {k: v for k, v in sorted(Fencermedals.items(), key=lambda item: -item[1])}
+Fencermedals = list(Fencermedals.items())
+print(Fencermedals)
+
+#Combined list but for gold medals
+Goldmedals1 = list(MFgoldmedals.items())+list(MSgoldmedals.items())+list(WFgoldmedals.items())+list(WSgoldmedals.items())
+Goldmedals  = {}
+for k,v in Goldmedals1:
+    Goldmedals[k] = v
+Goldmedals = {k: v for k, v in sorted(Goldmedals.items(), key=lambda item: -item[1])}
+Goldmedals = list(Goldmedals.items())
+print(Goldmedals)
+
 
 #First version of making a total list (only of the name and total number of medals)
 Fencermedals1 = list(MFfencermedals.items())+list(MSfencermedals.items())+list(WFfencermedals.items())+list(WSfencermedals.items())
